@@ -6,6 +6,7 @@ export const sRateJsonSchema = {
         population: {type: "float32"}
     },
     optionalProperties: {
+        id: {type: "string"},
         sex: {type: "string"},
         age: {type: "string"},
         suicides100k_pop: {type: "float32"},

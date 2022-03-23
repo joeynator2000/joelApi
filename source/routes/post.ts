@@ -2,11 +2,13 @@
 import express from 'express';
 import sController from '../controllers/sRateController';
 import mController from '../controllers/mSpendingController';
+import gCountryController from "../controllers/gCountryController";
+
 const router = express.Router();
+//requires header to have key name "type" with value json or xml
 
 // s rates routes
 //router.get('/sRate', controller.getAllSRate);
-//requires header to have key name "type" with value json or xml
 router.get('/sRate/:idS/:idE', sController.getRangeSRate);
 router.put('/sRate/:id', sController.putUpdateSRate);
 router.delete('/sRate/:id', sController.deleteDeleteSRate);
@@ -24,10 +26,10 @@ router.post('/mSpending', mController.postMSpending);
 router.post('/mSpending/:year', mController.postMSpendingAddColumn);
 
 // gni routes
-// router.get('/mSpending', mController.getAllMSpending);
-// router.put('/mSpending/:id', mController.putUpdateMSpending);
-// router.delete('/mSpending/:id', mController.deleteDeleteMSpending);
-// router.post('/mSpending', mController.postMSpending);
-// router.post('/mSpending/:year', mController.postMSpendingAddColumn);
+router.get('/gniCountry', gCountryController.getAllGniCountry);
+router.put('/gniCountry/:id', gCountryController.putUpdateGniCountry);
+router.delete('/gniCountry/:id', gCountryController.deleteDeleteGniCountry);
+router.post('/gniCountry', gCountryController.postGniCountry);
+router.post('/gniCountry/:year', gCountryController.postGniCountryAddColumn);
 
 export = router;

@@ -8,3 +8,7 @@ Available commands:
 * delete by id: DELETE /table/id
 * add entery to dataset: POST /table
 
+notes
+could have made xml sequence of elements to bundle the output xml
+
+could have made elegant delegate solution for the repeating code in the validators to choose what schema to pick for validation

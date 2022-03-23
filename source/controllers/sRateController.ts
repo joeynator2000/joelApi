@@ -7,8 +7,7 @@ import {validateSRateJson} from "../middleware/suicideRates/sRateJsonValidation"
 //     // not implemented as the datasets are very large
 // };
 
-// getting a single post
-const getsRateRange = async (req: Request, res: Response, next: NextFunction) => {
+const getRangeSRate = async (req: Request, res: Response, next: NextFunction) => {
     // get the post id from the req
     let type: any = req.headers.type;
     let start: string = req.params.idS;
@@ -23,7 +22,7 @@ const getsRateRange = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 // updating a post
-const updateSRatePost = async (req: Request, res: Response, next: NextFunction) => {
+const putUpdateSRate = async (req: Request, res: Response, next: NextFunction) => {
     if(req.rawHeaders.includes('application/xml')){
         let validator = require('xsd-schema-validator');
         try{
@@ -54,7 +53,7 @@ const updateSRatePost = async (req: Request, res: Response, next: NextFunction) 
 };
 
 // deleting a post
-const deleteSRatePost = async (req: Request, res: Response, next: NextFunction) => {
+const deleteDeleteSRate = async (req: Request, res: Response, next: NextFunction) => {
     // get the post id from req.params
     let id: string = req.params.id;
     // delete the post
@@ -62,14 +61,13 @@ const deleteSRatePost = async (req: Request, res: Response, next: NextFunction) 
 };
 
 // adding a post
-const addSRatePost = async (req: Request, res: Response, next: NextFunction) => {
+const postSRate = async (req: Request, res: Response, next: NextFunction) => {
     // validate request body check type then give to validator
     //console.log(req.body)
     //console.log('is json: ', req.rawHeaders.includes('application/json'))
     //console.log('is xml: ', JSON.stringify(req.rawHeaders.includes('application/xml')))
     //check if api post is xml or json
     if(req.rawHeaders.includes('application/xml')){
-        console.log('kills me')
         let validator = require('xsd-schema-validator');
         try{
             //validate against xsd
@@ -125,4 +123,4 @@ function OBJtoXML(obj: any) {
     return xml
 }
 
-export default { getsRateRange, updateSRatePost, deleteSRatePost, addSRatePost };
+export default { getRangeSRate, putUpdateSRate, deleteDeleteSRate, postSRate };

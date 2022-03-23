@@ -1,6 +1,7 @@
 How to use api:
 * run npm run dev in terminal
 * http://localhost:6060 is the base address
+* Requires header!!! key name "type" with value json or xml (will determine what return type is desired and required)
 
 Available commands:
 * get data from a specified id range (required to place type key with json/xml value in header): GET /table/startingId/endingId

@@ -12,7 +12,7 @@ How to use api:
 Chrome extension for running dashboard.  
 https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf/related?hl=en-US
 
-Available commands:
+Available commands (all routes found under source/routes/post.ts:
 * get data from a specified id range (required to place type key with json/xml value in header): GET /table/startingId/endingId
 * update by id, pass valid json or xml in body: PUT /table/id
 * delete by id: DELETE /table/id

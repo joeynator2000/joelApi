@@ -15,6 +15,7 @@ import {validateMSpendingJson} from "../middleware/militarySpending/mSpendingJso
 
 const getAllMSpending = async (req: Request, res: Response, next: NextFunction) => {
     // get the post id from the req
+    console.log(123)
     let type: any = req.headers.type;
     if(!type){
         return returnError400(res)

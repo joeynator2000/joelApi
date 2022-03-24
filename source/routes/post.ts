@@ -14,6 +14,9 @@ router.put('/sRate/:id', sController.putUpdateSRate);
 router.delete('/sRate/:id', sController.deleteDeleteSRate);
 router.post('/sRate', sController.postSRate);
 
+//dashboard route
+router.get('/sRate/:id', sController.getSRateForCountry);
+
 // military spending routes
 //requires header to have key name "type" with value json or xml
 router.get('/mSpending', mController.getAllMSpending);

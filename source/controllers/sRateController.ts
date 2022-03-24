@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {deleteSRate, insertSRate, updateSRate, getSRateRange } from '../services/sRateFunctions';
+import {deleteSRate, insertSRate, updateSRate, getSRateRange, getSRateCountry } from '../services/sRateFunctions';
 import {validateSRateJson} from "../middleware/suicideRates/sRateJsonValidation";
 
 // getting all posts
@@ -20,6 +20,15 @@ const getRangeSRate = async (req: Request, res: Response, next: NextFunction) =>
     // console.log(start)
     // console.log(end)
 };
+
+const getSRateForCountry = async (req: Request, res: Response, next: NextFunction) =>{
+    let type: any = req.headers.type;
+    let id: string = req.params.id;
+    if(!type){
+        return returnError400(res)
+    }
+    getSRateCountry(res, id);
+}
 
 // updating a post
 const putUpdateSRate = async (req: Request, res: Response, next: NextFunction) => {
@@ -123,4 +132,4 @@ function OBJtoXML(obj: any) {
     return xml
 }
 
-export default { getRangeSRate, putUpdateSRate, deleteDeleteSRate, postSRate };
+export default { getRangeSRate, putUpdateSRate, deleteDeleteSRate, postSRate, getSRateForCountry };

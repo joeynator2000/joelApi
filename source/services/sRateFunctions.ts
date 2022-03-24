@@ -97,6 +97,22 @@ export function getSRateRange(res: any, start: string, end: string, type: string
     }
 }
 
+export function getSRateCountry(res: any, id: any){
+    let sql = `SELECT country, year, SUM(suicides_no) AS sRateSum FROM suiciderates WHERE country = '${id}' AND year >= 1990 AND year <= 2014 GROUP BY year`;
+    try{
+        connection.query(sql, function (err: any, result: any) {
+            if (err){
+                throwErrors(res, err)
+            } else {
+                return res.status(200).json({result})
+            }
+        });
+    }catch (e) {
+        console.log(e)
+        throwErrors(res, e)
+    }
+}
+
 function OBJtoXML(obj: any) {
     var xml = '';
     for (var prop in obj) {

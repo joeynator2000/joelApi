@@ -13,13 +13,6 @@ Available commands:
 * delete by id: DELETE /table/id
 * add entery to dataset: POST /table
 
-GNI Input example for adding adding column:
-
-GNI Input example for adding adding column with immediate entery:
-
-GNI update example:
-
-
 notes
 could have made xml sequence of elements to bundle the output xml
 

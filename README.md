@@ -1,3 +1,8 @@
+Requirements:
+- node installed
+- JAVA_HOME environment variable is set up and has JDK and Javac (required for xml validation)
+- local mysql database such as xampp is required. (edit the login details on source/services/database.ts)
+
 How to use api:
 * run npm run dev in terminal
 * http://localhost:6060 is the base address

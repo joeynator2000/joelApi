@@ -18,6 +18,12 @@ Available commands (all routes found under source/routes/post.ts:
 * delete by id: DELETE /table/id
 * add entry to dataset: POST /table
 
+What went well:
+I am very proud of having achieved xml validation in javascript, as it uses java to validate. Furthermore, the database posed a little of a challenge, however, creative querying solved the problem in the end.
+
+Even better if:
+The database was not ideal for this project. Ideally I would either have a non-relational database, or data structured in a manner that columns are not values.
+
 notes
 could have made xml sequence of elements to bundle the output xml
 

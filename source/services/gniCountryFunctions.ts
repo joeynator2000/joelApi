@@ -156,6 +156,13 @@ export function getGniCountryAll(res: any, type: string){
 }
 
 function restructureJson(jsonObj: any){
+    let jsonReturnObj = {
+        root:[
+            {
+                Country:[{Yearx:0.21}, {Yeary:0.321}]
+            }
+        ]
+    }
     // for (const [key, value] of Object.entries(jsonObj)) {
     //     console.log(`${key}: ${value}`);
     // }
@@ -164,11 +171,30 @@ function restructureJson(jsonObj: any){
         const propOwn = Object.getOwnPropertyNames(jsonObj[key]); //array with keys that we need to get the values
         //console.log("TEST::", propOwn)
         //console.log(`${key}: ${jsonObj[key].Country}`);
-        console.log(`${key}: ${jsonObj[key][propOwn[0]]}`);
+        let pushObj = {}
+        let countryName;
+        let yearValues = [];
+        for(let i = 0; i < propOwn.length; i++)
+        {
+            console.log(`${key}: ${jsonObj[key][propOwn[i]]}`);
+            console.log(propOwn[i]);
+            if(i == 0){
+                countryName = jsonObj[key][propOwn[i]];
+            } else {
+                const yourKeyVariable = propOwn[i];
+                const yearValues= [...];
+
+                const obj = {
+                    [yourKeyVariable]: yearValues,
+                }
+
+                var key = propOwn[i];
+                var object = {};
+                object[key] = jsonObj[key][propOwn[i]];
+            }
+        }
     });
-    let jsonReturnObj = {
-        root:[]
-    }
+
     // Object.entries(jsonObj).forEach(([key, value]) => {
     //     console.log(`${key}: ${value}`)
     //     //const propOwn = Object.getOwnPropertyNames(value); //array with keys that we need to get the values

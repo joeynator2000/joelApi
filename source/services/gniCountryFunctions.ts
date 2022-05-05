@@ -1,11 +1,13 @@
 import { connection } from './database'
 
 export function insertGniCountry(data: any, isXml: boolean, res: any){
+    //adds new column for the specified year in the body of the put request
     connection.query(querySelectorInsert1(isXml, data), function (err: any, result: any) {
         if (err){
             throwErrors(res, err)
         } else {
             console.log('column created')
+            //insert the new country and gni value sent in the body of the put request
             connection.query(querySelectorInsert2(isXml, data), function (err: any, result: any) {
                 if (err){
                     throwErrors(res, err)
@@ -95,10 +97,10 @@ export function updateGniCountry(data: any, isXml: boolean, res:any){
 function updateQuerySelector(isXml: boolean, data: any){
     switch (isXml) {
         case true:
-            return`UPDATE gnibycountry SET Country = '${data.data.country[0]}','${'Y' + data.data.year[0]}' = '${data.data.value[0]}' WHERE Country = '${data.data.country[0]}';`;
+            return`UPDATE gnibycountry SET Country = '${data.data.country[0]}', ${'Y' + data.data.year[0]} = '${data.data.value[0]}' WHERE Country = '${data.data.country[0]}';`;
 
         case false:
-            return`UPDATE gnibycountry SET Country = '${data.country}', '${'Y' + data.year}' = '${data.value}' WHERE Country = '${data.country}';`;
+            return`UPDATE gnibycountry SET Country = '${data.country}', ${'Y' + data.year} = '${data.value}' WHERE Country = '${data.country}';`;
     }
 }
 

@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "gni country",
+  "description": "a country with gni value for a particular year",
+  "type": "object",
+  "properties": {
+    "country": {
+      "description": "The unique identifier of a place on the world",
+      "type": "string"
+    },
+    "year": {
+      "description": "The year of the countries recorded gni value",
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "value": {
+      "description": "The recorded gni value for a given country in a given year",
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  },
+  "required": [ "country", "year", "value" ]
+}

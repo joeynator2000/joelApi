@@ -1,3 +1,14 @@
+New read me:
+
+get started:
+1. open XAMPP and create a database with the name: joel_api
+2. import the database into the joel_api database over the xampp UI via the import button (import the database file found in this projects root/database/joel_api.sql) 
+3. Make sure your local machiene has node js installed in order to run the api!
+   1. Open the terminal in your IDE or open the command prompt and navigate to this projects directory
+   2. run the command: `npm i` or `npm install` to install all the required dependencies
+4. You can now run `npm run dev` to start up the api
+
+
 Requirements:
 - node installed
 - JAVA_HOME environment variable is set up and has JDK and Javac (required for xml validation) (This link will provide you with assistance if required: https://docs.oracle.com/cd/E21454_01/html/821-2532/inst_cli_jdk_javahome_t.html)

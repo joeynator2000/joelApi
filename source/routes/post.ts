@@ -30,9 +30,8 @@ router.post('/mSpending/:year', mController.postMSpendingAddColumn);
 
 // gni routes
 router.get('/gniCountry', gCountryController.getAllGniCountry);
-router.put('/gniCountry/:id', gCountryController.putUpdateGniCountry);
-router.delete('/gniCountry/:id', gCountryController.deleteDeleteGniCountry);
-router.post('/gniCountry', gCountryController.postGniCountry);
-router.post('/gniCountry/:year', gCountryController.postGniCountryAddColumn);
-
+router.put('/gniCountry/:id', gCountryController.putUpdateGniCountry); //update by country name where id is the name of the country (used to insert new gni values for a country for an associated year)
+router.delete('/gniCountry/:id', gCountryController.deleteDeleteGniCountry); //delete by country name where id is the country name
+router.post('/gniCountry', gCountryController.postGniCountry); //used to insert new year and country into the dataset
+router.post('/gniCountry/:year', gCountryController.postGniCountryAddColumn); //used to insert new column for recorded data into database (only adds year)
 export = router;

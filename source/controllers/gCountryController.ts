@@ -6,7 +6,7 @@ import {
     getGniCountryAll,
     insertNewGniCountryColumn
 } from '../services/gniCountryFunctions';
-import { validateMSpendingJson } from "../middleware/gniPerCountry/gniCountryJsonValidation";
+import { validateGniCountryJson } from "../middleware/gniPerCountry/gniCountryJsonValidation";
 
 // getting all posts
 // const getPosts = async (req: Request, res: Response, next: NextFunction) => {
@@ -39,7 +39,9 @@ const putUpdateGniCountry = async (req: Request, res: Response, next: NextFuncti
             console.log(e)
         }
     } else if(req.rawHeaders.includes('application/json')){
-        let result = validateMSpendingJson(req, next)
+        console.log("The request is a json request::: ", req.is("application/json"))
+        console.log(123)
+        let result = validateGniCountryJson(req, next)
         if(!result){
             return returnError400(res);
         }
@@ -83,7 +85,7 @@ const postGniCountry = async (req: Request, res: Response, next: NextFunction) =
             }
         } else if(req.rawHeaders.includes('application/json')){
             console.log('ok')
-            let result = validateMSpendingJson(req, next)
+            let result = validateGniCountryJson(req, next)
             if(!result){
                 return returnError400(res);
             }

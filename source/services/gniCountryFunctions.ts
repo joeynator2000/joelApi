@@ -161,12 +161,26 @@ function restructureJson(jsonObj: any){
     // }
     const keys = Object.keys(jsonObj);
     keys.forEach((key, index) => {
-        console.log(`${key}: ${jsonObj[key].Country}`);
+        const propOwn = Object.getOwnPropertyNames(jsonObj[key]); //array with keys that we need to get the values
+        //console.log("TEST::", propOwn)
+        //console.log(`${key}: ${jsonObj[key].Country}`);
+        console.log(`${key}: ${jsonObj[key][propOwn[0]]}`);
     });
-
-    Object.entries(jsonObj).forEach(([key, value]) => {
-        console.log(`${key}: ${value}`)
-    });
+    let jsonReturnObj = {
+        root:[]
+    }
+    // Object.entries(jsonObj).forEach(([key, value]) => {
+    //     console.log(`${key}: ${value}`)
+    //     //const propOwn = Object.getOwnPropertyNames(value); //array with keys that we need to get the values
+    //     // console.log("propOwn: ", propOwn)
+    //     // console.log("test :::", propOwn[0])
+    //     // let objectToPush = {
+    //     //     propOwn[0]
+    //     // }
+    //     // Object.entries(value).forEach(([key, value]) => {
+    //     //     console.log(`${key}: ${value}`)
+    //     // });
+    // });
 }
 
 function OBJtoXML(obj: any) {

@@ -12,6 +12,8 @@ get started:
 Requirements:
 - node installed
 - JAVA_HOME environment variable is set up and has JDK and Javac (required for xml validation) (This link will provide you with assistance if required: https://docs.oracle.com/cd/E21454_01/html/821-2532/inst_cli_jdk_javahome_t.html)
+- Instructions for setting up java home can be completed by following the tutorial in the following link: https://javatutorial.net/set-java-home-windows-10/
+- Once java home is set up, in order to run npm i command you might need to reset your ide
 - local mysql database such as xampp is required. (edit the login details on source/services/database.ts, database can be found in database folder in root directory)
 
 How to use api:

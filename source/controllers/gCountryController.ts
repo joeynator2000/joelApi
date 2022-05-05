@@ -15,7 +15,8 @@ import { validateGniCountryJson } from "../middleware/gniPerCountry/gniCountryJs
 
 const getAllGniCountry = async (req: Request, res: Response, next: NextFunction) => {
     // get the post id from the req
-    let type: any = req.headers.type;
+    let type: any = req.headers['content-type'];
+    console.log("content type is: ", type)
     if(!type){
         return returnError400(res)
     }

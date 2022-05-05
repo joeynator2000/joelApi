@@ -27,6 +27,7 @@
     "body-parser-xml": "^2.0.3",
     "mysql": "^2.18.1",
     "node-fetch": "^3.2.3",
+    "xml-js": "^1.6.11",
     "xsd-schema-validator": "^0.7.0"
   }
 }

@@ -108,17 +108,44 @@ function updateQuerySelector(isXml: boolean, data: any){
 export function getGniCountryAll(res: any, type: string){
     let sql = `SELECT * FROM gnibycountry WHERE 1`;
     try{
-        connection.query(sql, function (err: any, result: any) {
+        connection.query(sql, function (err:any, result:any, fields:any) {
             if (err){
                 throwErrors(res, err)
             }
-            if(type === "xml"){
+            if(type === "application/xml"){
+                restructureJson(result)
                 console.log('IN CONVERTER')
-                result = OBJtoXML(result);
+                var convert = require('xml-js');
+                var options = {compact: true, ignoreComment: true, spaces: 4};
+
+                var result1 = convert.json2xml(result, options);
+                result1 = "<root>" + result1 + "</root>";
+
+                //let resultNew = OBJtoXML(result)
+
+                //console.log(result1)
+                // result = OBJtoXML(result);
+                //resultNew = "<root>" + resultNew + "</root>";
+                console.log('testing converter back now');
+
+                // let jsonRes = parseXmlToJson(resultNew)
+                // console.log(jsonRes)
+
+                //console.log("num of keys::: ", Object.keys(jsonRes).length)
+
+
+                // var options2 = {ignoreComment: true, alwaysChildren: true};
+                // var result2 = convert.xml2json(result1);
+                // console.log(result2)
+
+                // var convert = require('xml-js');
+                // var result1 = convert.xml2json(result, {compact: true, spaces: 4});
+                // //let convBackRes = xml2json(result)
+                // console.log('Convert back result is as follows: ', result1)
                 res.set('Content-Type', 'application/xml');
-                return res.status(200).send(result)
+                return res.status(200).send(result1)
             }
-            if(type === "json") {
+            if(type === "application/json") {
                 return res.status(200).json({result})
             }
             throwErrors(res, 'Not recognized key value');
@@ -126,6 +153,20 @@ export function getGniCountryAll(res: any, type: string){
     }catch (e) {
         console.log(e)
     }
+}
+
+function restructureJson(jsonObj: any){
+    // for (const [key, value] of Object.entries(jsonObj)) {
+    //     console.log(`${key}: ${value}`);
+    // }
+    const keys = Object.keys(jsonObj);
+    keys.forEach((key, index) => {
+        console.log(`${key}: ${jsonObj[key].Country}`);
+    });
+
+    Object.entries(jsonObj).forEach(([key, value]) => {
+        console.log(`${key}: ${value}`)
+    });
 }
 
 function OBJtoXML(obj: any) {
@@ -147,6 +188,16 @@ function OBJtoXML(obj: any) {
     }
     var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
     return xml
+}
+
+function parseXmlToJson(xml: string) {
+    const json:any = {};
+    for (const res of xml.matchAll(/(?:<(\w*)(?:\s[^>]*)*>)((?:(?!<\1).)*)(?:<\/\1>)|<(\w*)(?:\s*)*\/>/gm)) {
+        const key = res[1] || res[3];
+        const value = res[2] && parseXmlToJson(res[2]);
+        json[key] = ((value && Object.keys(value).length) ? value : res[2]) || null;
+    }
+    return json;
 }
 
 function returnNullIfUndefined(input:any){

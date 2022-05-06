@@ -119,33 +119,9 @@ export function getGniCountryAll(res: any, type: string){
                 var options = {compact: true, ignoreComment: true, spaces: 4};
 
                 var result1 = convert.json2xml(restructuredResult, options);
-                //OBJtoXMLJoel(restructuredResult);
-                //let testString = '<root> blabla bla </root><root><otherTag>test here 2</otherTag></root><root><Root></Root></root>'
                 let refactoredXml = removeUnwantedRootElements(result1)
-                //result1 = "<root>" + result1 + "</root>";
-                //console.log(restructuredResult.root.length)
-                //let resultNew = OBJtoXML(restructuredResult)
-                //console.log(resultNew)
-                //console.log(result1)
-                // result = OBJtoXML(result);
-                //resultNew = "<root>" + resultNew + "</root>";
-                console.log('testing converter back now');
-
-                // let jsonRes = parseXmlToJson(resultNew)
-                // console.log(jsonRes)
-
-                //console.log("num of keys::: ", Object.keys(jsonRes).length)
-
-                var result2 = convert.xml2json(refactoredXml, {compact: true, spaces: 4});
-                console.log(result2)
-                // var options2 = {ignoreComment: true, alwaysChildren: true};
-                // var result2 = convert.xml2json(refactoredXml, options2);
+                // var result2 = convert.xml2json(refactoredXml, {compact: true, spaces: 4});
                 // console.log(result2)
-
-                // var convert = require('xml-js');
-                // var result1 = convert.xml2json(result, {compact: true, spaces: 4});
-                // //let convBackRes = xml2json(result)
-                // console.log('Convert back result is as follows: ', result1)
                 res.set('Content-Type', 'application/xml');
                 return res.status(200).send(refactoredXml)
             }
@@ -156,6 +132,7 @@ export function getGniCountryAll(res: any, type: string){
         });
     }catch (e) {
         console.log(e)
+        throwErrors(res, 'An error has occured: ' + e);
     }
 }
 
@@ -183,59 +160,10 @@ function restructureJson(jsonObj: any){
     return jsonReturnObj;
 }
 
-// function OBJtoXMLJoel(obj: any){
-//     let xmlReturnString = "";
-//     console.log("obj root 0", Object.keys(obj.root[0]))
-//     let key = Object.keys(obj.root[0])
-//     let keyCountryName = Object.keys(obj.root[1])
-//     console.log("key countryName 1: ", keyCountryName[0])
-//     let keyForValue = Object.keys(obj.root[0][`${key}`][0])
-//     console.log("obj root 0 value 0 object", obj.root[0][`${key}`][0])
-//     console.log("obj root 0 value 0 keys array", Object.keys(obj.root[0][`${key}`][0]))
-//     console.log("obj root 0 value 0 key", Object.keys(obj.root[0][`${key}`][0]))
-//     console.log("obj root 0 value 0 value", obj.root[0][`${key}`][0][`${keyForValue}`])
-//     // for(let i = 0; i < obj.root.length; i++){
-//     //     let key = Object.keys(obj.root[i])
-//     //     xmlReturnString += "<" + key + ">";
-//     //
-//     // }
-// }
-
 function removeUnwantedRootElements(xmlString: string){
     let stringNoRootStart = xmlString.replace(/<root>/g, '');
     let stringNoRootEnd = stringNoRootStart.replace(/<\/root>/g, '');
     return "<root>" + stringNoRootEnd + "</root>"
-}
-
-function OBJtoXML(obj: any) {
-    var xml = '';
-    for (var prop in obj) {
-        xml += obj[prop] instanceof Array ? '' : "<" + prop + ">";
-        if (obj[prop] instanceof Array) {
-            for (var array in obj[prop]) {
-                xml += "<" + prop + ">";
-                xml += OBJtoXML(new Object(obj[prop][array]));
-                xml += "</" + prop + ">";
-            }
-        } else if (typeof obj[prop] == "object") {
-            xml += OBJtoXML(new Object(obj[prop]));
-        } else {
-            xml += obj[prop];
-        }
-        xml += obj[prop] instanceof Array ? '' : "</" + prop + ">";
-    }
-    var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
-    return xml
-}
-
-function parseXmlToJson(xml: string) {
-    const json:any = {};
-    for (const res of xml.matchAll(/(?:<(\w*)(?:\s[^>]*)*>)((?:(?!<\1).)*)(?:<\/\1>)|<(\w*)(?:\s*)*\/>/gm)) {
-        const key = res[1] || res[3];
-        const value = res[2] && parseXmlToJson(res[2]);
-        json[key] = ((value && Object.keys(value).length) ? value : res[2]) || null;
-    }
-    return json;
 }
 
 function returnNullIfUndefined(input:any){

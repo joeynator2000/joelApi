@@ -17,10 +17,16 @@ const getAllGniCountry = async (req: Request, res: Response, next: NextFunction)
     // get the post id from the req
     let type: any = req.headers['content-type'];
     console.log("content type is: ", type)
-    if(!type){
+    if(req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        console.log('Object missing');
+        if(!type){
+            return returnError400(res)
+        }
+        getGniCountryAll(res, type);
+    } else {
+        //throw error if body is sent
         return returnError400(res)
     }
-    getGniCountryAll(res, type);
 };
 
 // updating a post

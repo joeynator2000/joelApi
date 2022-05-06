@@ -2,23 +2,29 @@ import { connection } from './database'
 
 export function insertGniCountry(data: any, isXml: boolean, res: any){
     //adds new column for the specified year in the body of the put request
-    connection.query(querySelectorInsert1(isXml, data), function (err: any, result: any) {
-        if (err){
-            throwErrors(res, err)
-        } else {
-            console.log('column created')
-            //insert the new country and gni value sent in the body of the put request
-            connection.query(querySelectorInsert2(isXml, data), function (err: any, result: any) {
-                if (err){
-                    throwErrors(res, err)
-                } else {
-                    console.log('data inserted')
-                    res.status(200).json({'message': 'New year entered and country recorded'})
-                }
-            });
-        }
-    });
-    return false
+    try
+    {
+        connection.query(querySelectorInsert1(isXml, data), function (err: any, result: any) {
+            if (err){
+                throwErrors(res, err)
+            } else {
+                console.log('column created')
+                //insert the new country and gni value sent in the body of the put request
+                connection.query(querySelectorInsert2(isXml, data), function (err: any, result: any) {
+                    if (err){
+                        throwErrors(res, err)
+                    } else {
+                        console.log('data inserted')
+                        res.status(200).json({'message': 'New year entered and country recorded'})
+                    }
+                });
+            }
+        });
+    }catch (e)
+    {
+        console.log(e)
+        throwErrors(res, e)
+    }
 }
 
 export function insertNewGniCountryColumn(year: any, res: any){
@@ -48,10 +54,10 @@ function querySelectorInsert2(isXml: boolean, data: any){
 
     switch (isXml) {
         case true:
-            return `Insert INTO gnibycountry (Country, '${'Y' + data.data.year[0]}') values ('${data.data.country[0]}', ${data.data.value[0]});`
+            return `Insert INTO gnibycountry (Country, ${'Y' + data.data.year[0]}) values ('${data.data.country[0]}', ${data.data.value[0]});`
 
         case false:
-            return `Insert INTO gnibycountry (Country, '${'Y' + data.year}') values ('${data.country}', ${data.value});`
+            return `Insert INTO gnibycountry (Country, ${'Y' + data.year}) values ('${data.country}', ${data.value});`
     }
 }
 

@@ -48,7 +48,7 @@ const putUpdateGniCountry = async (req: Request, res: Response, next: NextFuncti
     } else if(req.rawHeaders.includes('application/json')){
         console.log("The request is a json request::: ", req.is("application/json"))
         console.log(123)
-        let result = validateGniCountryJson(req, next)
+        let result = validateGniCountryJson(req)
         if(!result){
             return returnError400(res);
         }
@@ -56,12 +56,17 @@ const putUpdateGniCountry = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
-// deleting a post
+// delete a country
 const deleteDeleteGniCountry = async (req: Request, res: Response, next: NextFunction) => {
-    // get the post id from req.params
-    let id: string = req.params.id;
-    // delete the post
-    deleteGniCountry(id, res)
+    if(req.body.constructor === Object && Object.keys(req.body).length === 0){
+        // get the post id from req.params
+        let id: string = req.params.countryName;
+        // delete the post
+        deleteGniCountry(id, res)
+    } else {
+        //throw error if body is sent
+        return returnError400(res)
+    }
 };
 
 // adding a post
@@ -71,9 +76,9 @@ const postGniCountry = async (req: Request, res: Response, next: NextFunction) =
     //console.log('is json: ', req.rawHeaders.includes('application/json'))
     //console.log('is xml: ', JSON.stringify(req.rawHeaders.includes('application/xml')))
     //check if api post is xml or json
-
+    let type: any = req.headers['content-type'];
     if(Object.keys(req.body).length){
-        if(req.rawHeaders.includes('application/xml')){
+        if(type == "application/xml"){
             let validator = require('xsd-schema-validator');
             try{
                 //validate against xsd
@@ -82,18 +87,15 @@ const postGniCountry = async (req: Request, res: Response, next: NextFunction) =
                         return returnError400(res);
                     }
                     // extract values from req.body and insert into db
-                    let insertResult = insertGniCountry(req.body, true, res);
-                    if(insertResult){
-                        return returnStatus200(res);
-                    }
+                    insertGniCountry(req.body, true, res);
                 });
             } catch (e) {
                 console.log(e)
             }
-        } else if(req.rawHeaders.includes('application/json')){
-            console.log('ok')
-            let result = validateGniCountryJson(req, next)
+        } else if(type == "application/json"){
+            let result = validateGniCountryJson(req)
             if(!result){
+                console.log("Json not valid")
                 return returnError400(res);
             }
             insertGniCountry(req.body, false, res)

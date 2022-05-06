@@ -19,5 +19,6 @@
       "exclusiveMinimum": 0
     }
   },
-  "required": [ "country", "year", "value" ]
+  "required": [ "country", "year", "value" ],
+  "additionalProperties": false
 }

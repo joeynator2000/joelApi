@@ -39,7 +39,7 @@ const putUpdateGniCountry = async (req: Request, res: Response, next: NextFuncti
             let validator = require('xsd-schema-validator');
             try{
                 //validate against xsd
-                validator.validateXML(OBJtoXML(req.body), 'source/middleware/suicideRates/xmlSRSchema.xsd', function(err:any, result:any) {
+                validator.validateXML(OBJtoXML(req.body), 'source/middleware/gniPerCountry/xmlGniCountrySchema.xsd', function(err:any, result:any) {
                     if (err) {
                         return returnError400(res);
                     }
@@ -90,7 +90,7 @@ const postGniCountry = async (req: Request, res: Response, next: NextFunction) =
             let validator = require('xsd-schema-validator');
             try{
                 //validate against xsd
-                validator.validateXML(OBJtoXML(req.body), 'source/middleware/suicideRates/xmlSRSchema.xsd', function(err:any, result:any) {
+                validator.validateXML(OBJtoXML(req.body), 'source/middleware/gniPerCountry/xmlGniCountrySchema.xsd', function(err:any, result:any) {
                     if (err) {
                         return returnError400(res);
                     }

@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import {deleteSRate, insertSRate, updateSRate, getSRateRange, getSRateCountry } from '../services/sRateFunctions';
+import {
+    deleteSRate,
+    insertSRate,
+    updateSRate,
+    getSRateRange,
+    getSRateCountry
+} from '../services/sRateFunctions';
 import {validateSRateJson} from "../middleware/suicideRates/sRateJsonValidation";
 
 // getting all posts

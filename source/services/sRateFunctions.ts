@@ -1,36 +1,36 @@
 import { connection } from './database'
+import convert from "xml-js";
 
 export function insertSRate(data: any, isXml: boolean, res: any){
     try{
         connection.query(querySelecter(isXml, data), function (err: any, result: any) {
             if (err){
                 console.log(err)
-                throwErrors(res, err)
+                return throwErrors(res, err)
             }
             console.log("1 record inserted");
+            return res.status(200).json({'status': '200', 'message': 'OK'})
         });
-        return res.status(200).json({'status': '200', 'message': 'OK'})
     } catch (e) {
         console.log(e)
-        throwErrors(res, e)
+        return throwErrors(res, e)
     }
 }
 
 function querySelecter(isXml: boolean, data: any){
     switch (isXml) {
         case true:
-            return `INSERT INTO suiciderates(country,year,sex,age,suicides_no,population,suicides100k_pop,countryyear,HDI_for_year,gdp_per_capita_,generation) VALUES ('${data.data.country[0]}',${data.data.year[0]},'${returnNullIfUndefined(data.data.sex[0])}','${returnNullIfUndefined(data.data.age[0])}',${data.data.suicide_no[0]},${data.data.population[0]},${returnNullIfUndefined(data.data.suicides100k_pop[0])},'${returnNullIfUndefined(data.data.countryyear[0])}',NULL,NULL,NULL);`
+            return `INSERT INTO suiciderates(country,year,sex,age,suicides_no,population,suicides100k_pop,countryyear,HDI_for_year,gdp_per_capita_,generation) VALUES ('${data.data.country[0]}',${data.data.year[0]},'${returnNullIfUndefined(data.data.sex[0])}','${returnNullIfUndefined(data.data.age[0])}',${data.data.suicide_no[0]},${returnNullIfUndefined(data.data.population[0])},${returnNullIfUndefined(data.data.suicides100k_pop[0])},'${returnNullIfUndefined(data.data.countryyear[0])}',NULL,NULL,NULL);`
 
         case false:
-            return `INSERT INTO suiciderates(country,year,sex,age,suicides_no,population,suicides100k_pop,countryyear,HDI_for_year,gdp_per_capita_,generation) VALUES ('${data.country}',${data.year},'${returnNullIfUndefined(data.sex)}','${returnNullIfUndefined(data.age)}',${data.suicide_no},${data.population},${returnNullIfUndefined(data.suicides100k_pop)},'${returnNullIfUndefined(data.countryyear)}',NULL,NULL,NULL);`
+            return `INSERT INTO suiciderates(country,year,sex,age,suicides_no,population,suicides100k_pop,countryyear,HDI_for_year,gdp_per_capita_,generation) VALUES ('${data.country}',${data.year},'${returnNullIfUndefined(data.sex)}','${returnNullIfUndefined(data.age)}',${data.suicide_no},${returnNullIfUndefined(data.population)},${returnNullIfUndefined(data.suicides100k_pop)},'${returnNullIfUndefined(data.countryyear)}',NULL,NULL,NULL);`
     }
 }
 
 export function deleteSRate(id: string, res:any){
     try{
-        let sql = `DELETE FROM suiciderates WHERE id = ${id}`;
+        let sql = `DELETE FROM suiciderates WHERE country = '${id}'`;
         connection.query(sql, function (err:any, result:any) {
-            console.log(result.affectedRows)
             if (err){
                 throwErrors(res, err)
             }
@@ -45,11 +45,9 @@ export function deleteSRate(id: string, res:any){
     }
 }
 
-export function updateSRate(data: any, isXml: boolean, res:any){
-    console.log(data)
-    console.log('HERE IN UPDATE')
+export function updateSRate(id:any, data: any, isXml: boolean, res:any){
     try{
-        connection.query(updateQuerySelector(isXml, data), function (err:any, result:any) {
+        connection.query(updateQuerySelector(id, isXml, data), function (err:any, result:any) {
             if (err){
                 throwErrors(res, err)
             }
@@ -59,19 +57,17 @@ export function updateSRate(data: any, isXml: boolean, res:any){
         console.log(e)
         throwErrors(res, e)
     }
-    return true;
 }
 
-function updateQuerySelector(isXml: boolean, data: any){
+function updateQuerySelector(id:any, isXml: boolean, data: any){
     switch (isXml) {
         case true:
-            return`UPDATE suiciderates SET country = '${data.data.country[0]}',year = ${data.data.year[0]},sex = '${data.data.sex[0]}',age = '${data.data.age[0]}',suicides_no = ${data.data.suicide_no[0]},population = ${data.data.population[0]},suicides100k_pop = ${data.data.suicides100k_pop[0]},countryyear = '${data.data.countryyear[0]}' WHERE id = ${data.data.id};`;
+            return`UPDATE suiciderates SET country = '${data.data.country[0]}',year = ${data.data.year[0]},suicides_no = ${data.data.suicide_no[0]},countryyear = '${data.data.country[0]}${data.data.year[0]}' WHERE id = ${id};`;
 
         case false:
-            return`UPDATE suiciderates SET country = '${data.country[0]}',year = ${data.year[0]},sex = '${data.sex[0]}',age = '${data.age[0]}',suicides_no = ${data.suicide_no[0]},population = ${data.population[0]},suicides100k_pop = ${data.suicides100k_pop[0]},countryyear = '${data.countryyear[0]}' WHERE id = ${data.id};`;
+            return`UPDATE suiciderates SET country = '${data.country}',year = ${data.year},suicides_no = ${data.suicide_no},countryyear = '${data.country}${data.year}' WHERE id = ${id};`;
     }
 }
-
 
 export function getSRateRange(res: any, start: string, end: string, type: string){
     let sql = `SELECT * FROM suiciderates WHERE id >= ${start} AND id <= ${end}`;
@@ -97,14 +93,26 @@ export function getSRateRange(res: any, start: string, end: string, type: string
     }
 }
 
-export function getSRateCountry(res: any, id: any){
+export function getSRateCountry(res: any, id: any, isXml: boolean){
     let sql = `SELECT country, year, SUM(suicides_no) AS sRateSum FROM suiciderates WHERE country = '${id}' AND year >= 1990 AND year <= 2014 GROUP BY year`;
     try{
         connection.query(sql, function (err: any, result: any) {
             if (err){
                 throwErrors(res, err)
             } else {
-                return res.status(200).json({result})
+                if(isXml)
+                {
+                    //change to xml data
+                    let restructuredResult = restructureJson(result)
+                    var convert = require('xml-js');
+                    var options = {compact: true, ignoreComment: true, spaces: 4};
+                    var result1 = convert.json2xml(restructuredResult, options);
+                    let refactoredXml = removeUnwantedRootElements(result1);
+                    res.set('Content-Type', 'application/xml');
+                    return res.status(200).send(refactoredXml)
+                } else {
+                    return res.status(200).json({result})
+                }
             }
         });
     }catch (e) {
@@ -140,4 +148,34 @@ function returnNullIfUndefined(input:any){
 
 function throwErrors(res: any, error: any){
     return res.status(400).json({'status': '400', 'message': error})
+}
+
+function restructureJson(jsonObj: any){
+    let jsonReturnObjString = '{"root":[]}';
+    let jsonReturnObj = JSON.parse(jsonReturnObjString)
+    const keys = Object.keys(jsonObj);
+    keys.forEach((key, index) => {
+        const propOwn = Object.getOwnPropertyNames(jsonObj[key]); //array with keys that we need to get the values from jsonObj[key].
+        let countryName = jsonObj[key][`${propOwn[0]}`]; //gets the country name from the database data
+        let pushObjString = '{"' + countryName + '": []}';
+        let pushObjJSONParsed = JSON.parse(pushObjString);
+        //loop through all data points and make a json string that holds the year as key and the gni value as value to push onto the country object
+        for(let i = 1; i < propOwn.length; i++)
+        {
+            let yearValueObjectString = '{"' + propOwn[i] + '": ' + jsonObj[key][`${propOwn[i]}`] + '}';
+            let yearValueJSON = JSON.parse(yearValueObjectString);
+            pushObjJSONParsed[`${countryName}`].push(yearValueJSON);
+        }
+        // push the finished country with the array of year and gni value pairs onto the root data json
+        jsonReturnObj.root.push(pushObjJSONParsed);
+    });
+    //return restructured json object. uncomment log to see what it looks like
+    //console.log("return obj parsed AFTER ADDED:::: ", jsonReturnObj)
+    return jsonReturnObj;
+}
+
+function removeUnwantedRootElements(xmlString: string){
+    let stringNoRootStart = xmlString.replace(/<root>/g, '');
+    let stringNoRootEnd = stringNoRootStart.replace(/<\/root>/g, '');
+    return "<root>" + stringNoRootEnd + "</root>"
 }

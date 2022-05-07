@@ -4,15 +4,9 @@
     <xs:element name="data">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="id" type="xs:string" minOccurs="0"/>
-                <xs:element name="country" type="xs:string" />
-                <xs:element name="year" type="xs:unsignedShort" />
-                <xs:element name="sex" type="xs:string" />
-                <xs:element name="age" type="xs:string" />
-                <xs:element name="suicide_no" type="xs:unsignedByte" />
-                <xs:element name="population" type="xs:unsignedInt" />
-                <xs:element name="suicides100k_pop" type="xs:decimal" />
-                <xs:element name="countryyear" type="xs:string" />
+                <xs:element name="country" type="xs:string"/>
+                <xs:element name="year" type="xs:nonNegativeInteger" />
+                <xs:element name="suicide_no" type="xs:nonNegativeInteger" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

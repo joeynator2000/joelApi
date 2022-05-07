@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Suicide rate schema",
+  "description": "holds data inserting or altering the database contents of a countries suicide rate",
+  "type": "object",
+  "properties": {
+    "country": {
+      "description": "The unique identifier of a place on the world",
+      "type": "string"
+    },
+    "year": {
+      "description": "The year of the countries recorded suicide rate",
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "suicide_no": {
+      "description": "The recorded amount suicides in the specified country for the specified year",
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  },
+  "required": [ "country", "year", "suicide_no" ],
+  "additionalProperties": false
+}

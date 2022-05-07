@@ -8,14 +8,22 @@ const router = express.Router();
 //requires header to have key name "type" with value json or xml
 
 // s rates routes
-//router.get('/sRate', controller.getAllSRate);
-router.get('/sRate/:idS/:idE', sController.getRangeSRate);
-router.put('/sRate/:id', sController.putUpdateSRate);
-router.delete('/sRate/:id', sController.deleteDeleteSRate);
-router.post('/sRate', sController.postSRate);
+//router.get('/sRate', controller.getAllSRate); //this function was not created as it is useless due to the overall structure of the dataset. furthermore, there are way too many data points for this function to be used effectively
+router.get('/sRate/:idS/:idE', sController.getRangeSRate);// this route returns all data points within a specified id range, referring to the exact ID of the database entries.
+router.put('/sRate/:id', sController.putUpdateSRate); // is used to update or correct a specified database entry. the uri expects the exact ID of the database entry that should be updated. expects the body with the country, year, and suicide_no that should be updated for the specified entry. header should specify content type of application/json or application/xml according to the contents of the body
+router.delete('/sRate/:country', sController.deleteDeleteSRate);//used to delete all suicide rate data of a specified country, which is specified in the uri
+router.post('/sRate', sController.postSRate); //used to insert a suicide rate for a specified country in a specified year. expects body with
+/**Example json for post military spending api call:
+ * {
+ *     "country":"asodfoahasdg",
+ *     "year":2025,
+ *     "suicide_no":12312
+ * }
+ *
+ * */
 
 //dashboard route
-router.get('/sRate/:id', sController.getSRateForCountry);
+router.get('/sRate/:country', sController.getSRateForCountry);//returns all records of a specified country from 1990 to 2014. no body expected. content type should be specified to application/json or application/xml. the uri parameter should specify the country of which the suicide data should be sent.
 
 // military spending routes
 router.get('/mSpending', mController.getAllMSpending); // expects a header with content type specifying application/json or application/xml, no body required
@@ -28,7 +36,7 @@ router.post('/mSpending/:year', mController.postMSpendingAddColumn);// used to a
  * {
  *     "country":"asodfoahasdg",
  *     "year":2025,
- *     "value":42069
+ *     "value":1231
  * }
  *
  * */
@@ -43,7 +51,7 @@ router.post('/gniCountry/:year', gCountryController.postGniCountryAddColumn); //
  * {
  *     "country":"asodfoahasdg",
  *     "year":2025,
- *     "value":42069
+ *     "value":1233
  * }
  *
  * */

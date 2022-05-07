@@ -11,10 +11,10 @@ const userActionPost = async () => {
         // Displaying the value
 
         try{
-            const response = await fetch('http://localhost:6060/mSpending', {
+            const response = await fetch('http://localhost:6061/mSpending', {
                 method: 'GET',
                 headers: {
-                    'type': 'json'
+                    'Content-Type': 'application/json'
                 }
             });
             const myJson = await response.json(); //extract JSON from the http response
@@ -28,10 +28,10 @@ const userActionPost = async () => {
         }
 
         try{
-            const response = await fetch('http://localhost:6060/gniCountry', {
+            const response = await fetch('http://localhost:6061/gniCountry', {
                 method: 'GET',
                 headers: {
-                    'type': 'json'
+                    'Content-Type': 'application/json'
                 }
             });
             const myJson = await response.json(); //extract JSON from the http response
@@ -42,10 +42,10 @@ const userActionPost = async () => {
         }
 
         try{
-            const response = await fetch('http://localhost:6060/sRate/' + countryToFind, {
+            const response = await fetch('http://localhost:6061/sRate/' + countryToFind, {
                 method: 'GET',
                 headers: {
-                    'type': 'json'
+                    'Content-Type': 'application/json'
                 }
             });
             const myJson = await response.json(); //extract JSON from the http response
@@ -56,7 +56,7 @@ const userActionPost = async () => {
         }
         if(checkCountry(sRate, mSpending, gni))
         {
-            console.log(gni)
+            console.log("HEREAAAA::::: ", gni)
             createChart(sRate, mSpending, gni, countryToFind)
         } else {
             alert('No data could be retrieved under that name')
@@ -80,6 +80,7 @@ function createChart(sRate, mSpending, gni, country){
             labels: xValues,
             datasets: [{
                 label: 'GNI',
+                yAxisID: 'A',
                 data: gniYValues,
                 borderColor: "red",
                 fill: false
@@ -90,36 +91,89 @@ function createChart(sRate, mSpending, gni, country){
                 fill: false
             }, {
                 label: 'sRate',
+                yAxisID: 'B',
                 data: sRateValues,
                 borderColor: "blue",
                 fill: false
             }]
         },
         options: {
-            legend: {display: true}
+            legend: {display: true},
+            scales: {
+                yAxes: [{
+                    id: 'A',
+                    type: 'linear',
+                    position: 'left',
+                }, {
+                    id: 'B',
+                    type: 'linear',
+                    position: 'right',
+                    ticks: {
+                        max: 1000,
+                        min: 0
+                    }
+                }]
+            }
         }
     });
 
-    new Chart("myChart2", {
-        type: "line",
+    var canvas = document.getElementById('myChart2');
+    new Chart(canvas, {
+        type: 'line',
         data: {
             labels: xValues,
             datasets: [{
                 label: 'GNI',
+                yAxisID: 'A',
                 data: gniYValues,
                 borderColor: "red",
-                fill: false
             }, {
-                label: 'sRate',
+                label: 'S Rate',
+                yAxisID: 'B',
                 data: sRateValues,
                 borderColor: "blue",
-                fill: false
             }]
         },
         options: {
-            legend: {display: true}
+            scales: {
+                yAxes: [{
+                    id: 'A',
+                    type: 'linear',
+                    position: 'left',
+                }, {
+                    id: 'B',
+                    type: 'linear',
+                    position: 'right',
+                    ticks: {
+                        max: 1000,
+                        min: 0
+                    }
+                }]
+            }
         }
     });
+    // new Chart("myChart2", {
+    //     type: "line",
+    //     data: {
+    //         labels: xValues,
+    //         datasets: [{
+    //             label: 'GNI',
+    //             yAxisID: 'A',
+    //             data: gniYValues,
+    //             borderColor: "red",
+    //             fill: false
+    //         }, {
+    //             label: 'sRate',
+    //             yAxisID: 'B',
+    //             data: sRateValues,
+    //             borderColor: "blue",
+    //             fill: false
+    //         }]
+    //     },
+    //     options: {
+    //         legend: {display: true}
+    //     }
+    // });
 }
 
 function checkCountry(sRate, mSpending, gni){
@@ -154,7 +208,7 @@ function getGniYValues(gni, countryToFind){
             }
         }
     }
-    console.log(returnArray)
+    console.log("RETURN ARRAY WITH COUNTRY GNI VALUES", returnArray)
     return returnArray;
 }
 
@@ -181,6 +235,6 @@ function getSRateValues(sRate){
         // look for the entry with a matching `code` value
         returnArray.push(sRate.result[i].sRateSum)
     }
-    console.log(returnArray)
+    console.log("SRATE VALUES IN RETURN ARRAY::: ", returnArray)
     return returnArray;
 }

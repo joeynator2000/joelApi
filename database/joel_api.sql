@@ -607,7 +607,7 @@ CREATE TABLE `suiciderates` (
   `sex` varchar(6) DEFAULT NULL,
   `age` varchar(11) DEFAULT NULL,
   `suicides_no` int(11) NOT NULL,
-  `population` bigint(20) NOT NULL,
+  `population` bigint(20) DEFAULT NULL,
   `suicides100k_pop` decimal(6,2) DEFAULT NULL,
   `countryyear` varchar(32) DEFAULT NULL,
   `HDI_for_year` decimal(5,3) DEFAULT NULL,

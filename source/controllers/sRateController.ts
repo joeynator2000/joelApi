@@ -7,6 +7,7 @@ import {
     getSRateCountry
 } from '../services/sRateFunctions';
 import {validateSRateJson} from "../middleware/suicideRates/sRateJsonValidation";
+import {deleteMSpending} from "../services/mSpendingFunctions";
 
 // getting all posts
 // const getPosts = async (req: Request, res: Response, next: NextFunction) => {
@@ -22,57 +23,83 @@ const getRangeSRate = async (req: Request, res: Response, next: NextFunction) =>
         return returnError400(res)
     }
     getSRateRange(res, start, end, type);
-    //console.log(req.rawHeaders.includes('application/json'))s
-    // console.log(start)
-    // console.log(end)
 };
 
 const getSRateForCountry = async (req: Request, res: Response, next: NextFunction) =>{
-    let type: any = req.headers.type;
-    let id: string = req.params.id;
-    if(!type){
+    let type: any = req.headers['content-type'];
+    if(req.body.constructor === Object && Object.keys(req.body).length == 0)
+    {
+        let country: string = req.params.country;
+        if(country.length > 0)
+        {
+            if(type == 'application/xml')
+            {
+                getSRateCountry(res, country, true);
+            } else if(type == 'application/json')
+            {
+                getSRateCountry(res, country, false);
+            } else {
+                return returnError400(res)
+            }
+
+        } else {
+            return returnError400(res)
+        }
+    } else {
         return returnError400(res)
     }
-    getSRateCountry(res, id);
+
 }
 
 // updating a post
 const putUpdateSRate = async (req: Request, res: Response, next: NextFunction) => {
-    if(req.rawHeaders.includes('application/xml')){
-        let validator = require('xsd-schema-validator');
-        try{
-            //validate against xsd
-            validator.validateXML(OBJtoXML(req.body), 'source/middleware/suicideRates/xmlSRSchema.xsd', function(err:any, result:any) {
-                if (err) {
-                    return returnError400(res);
-                }
-                // extract values from req.body and insert into db
-                let insertResult = updateSRate(req.body, true, res);
-                if(insertResult){
-                    return returnStatus200(res);
-                }
-            });
-        } catch (e) {
-            console.log(e)
-        }
-    } else if(req.rawHeaders.includes('application/json')){
-        let result = validateSRateJson(req, next)
-        if(!result){
-            return returnError400(res);
-        }
-        let insertResult = updateSRate(req.body, false, res)
-        if(insertResult){
+    let type: any = req.headers['content-type'];
+    let id: string = req.params.id;
+    if(!id.match('^[0-9]*$')){
+        return returnError400(res)
+    }
+    if(req.body.constructor === Object && Object.keys(req.body).length > 0)
+    {
+        if(type == 'application/xml'){
+            let validator = require('xsd-schema-validator');
+            try{
+                //validate against xsd
+                validator.validateXML(OBJtoXML(req.body), 'source/middleware/suicideRates/xmlSRSchema.xsd', function(err:any, result:any) {
+                    if (err) {
+                        return returnError400(res);
+                    }
+                    // extract values from req.body and insert into db
+                    updateSRate(id, req.body, true, res);
+                });
+            } catch (e) {
+                console.log(e)
+                return returnStatus200(res);
+            }
+        } else if(type == 'application/json'){
+            let result = validateSRateJson(req)
+            if(!result){
+                return returnError400(res);
+            }
+            updateSRate(id, req.body, false, res)
+        } else {
             returnStatus200(res);
         }
+    } else {
+        returnStatus200(res);
     }
 };
 
 // deleting a post
 const deleteDeleteSRate = async (req: Request, res: Response, next: NextFunction) => {
-    // get the post id from req.params
-    let id: string = req.params.id;
-    // delete the post
-    deleteSRate(id, res)
+    if(req.body.constructor === Object && Object.keys(req.body).length == 0)
+    {
+        // get the post id from req.params
+        let id: string = req.params.country;
+        // delete the post
+        deleteSRate(id, res)
+    } else {
+        return returnError400(res);
+    }
 };
 
 // adding a post
@@ -82,30 +109,35 @@ const postSRate = async (req: Request, res: Response, next: NextFunction) => {
     //console.log('is json: ', req.rawHeaders.includes('application/json'))
     //console.log('is xml: ', JSON.stringify(req.rawHeaders.includes('application/xml')))
     //check if api post is xml or json
-    if(req.rawHeaders.includes('application/xml')){
-        let validator = require('xsd-schema-validator');
-        try{
-            //validate against xsd
-            validator.validateXML(OBJtoXML(req.body), 'source/middleware/suicideRates/xmlSRSchema.xsd', function(err:any, result:any) {
-                if (err) {
-                    return returnError400(res);
-                }
-                // extract values from req.body and insert into db
-                let insertResult = insertSRate(req.body, true, res);
-                if(insertResult){
-                    return returnStatus200(res);
-                }
-            });
-        } catch (e) {
-            console.log(e)
-        }
-    } else if(req.rawHeaders.includes('application/json')){
-        console.log('ok')
-        let result = validateSRateJson(req, next)
-        if(!result){
+    let type: any = req.headers['content-type'];
+    if(req.body.constructor === Object && Object.keys(req.body).length > 0)
+    {
+        if(type == 'application/xml'){
+            let validator = require('xsd-schema-validator');
+            try{
+                //validate against xsd
+                validator.validateXML(OBJtoXML(req.body), 'source/middleware/suicideRates/xmlSRSchema.xsd', function(err:any, result:any) {
+                    if (err) {
+                        return returnError400(res);
+                    }
+                    // extract values from req.body and insert into db
+                    insertSRate(req.body, true, res);
+                });
+            } catch (e) {
+                console.log(e)
+                return returnStatus200(res);
+            }
+        } else if(type == 'application/json'){
+            let result = validateSRateJson(req)
+            if(!result){
+                return returnError400(res);
+            }
+            insertSRate(req.body, false, res)
+        } else {
             return returnError400(res);
         }
-        insertSRate(req.body, false, res)
+    } else {
+        return returnError400(res);
     }
 };
 

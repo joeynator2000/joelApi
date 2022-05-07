@@ -110,7 +110,6 @@ function updateQuerySelector(isXml: boolean, data: any){
     }
 }
 
-
 export function getGniCountryAll(res: any, type: string){
     let sql = `SELECT * FROM gnibycountry WHERE 1`;
     try{
@@ -170,10 +169,6 @@ function removeUnwantedRootElements(xmlString: string){
     let stringNoRootStart = xmlString.replace(/<root>/g, '');
     let stringNoRootEnd = stringNoRootStart.replace(/<\/root>/g, '');
     return "<root>" + stringNoRootEnd + "</root>"
-}
-
-function returnNullIfUndefined(input:any){
-    return (input ? input : `NULL`);
 }
 
 function throwErrors(res: any, error: any){

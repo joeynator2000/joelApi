@@ -31,28 +31,36 @@ const getAllGniCountry = async (req: Request, res: Response, next: NextFunction)
 
 // updating a post
 const putUpdateGniCountry = async (req: Request, res: Response, next: NextFunction) => {
-    if(req.rawHeaders.includes('application/xml')){
-        let validator = require('xsd-schema-validator');
-        try{
-            //validate against xsd
-            validator.validateXML(OBJtoXML(req.body), 'source/middleware/suicideRates/xmlSRSchema.xsd', function(err:any, result:any) {
-                if (err) {
-                    return returnError400(res);
-                }
-                // extract values from req.body and insert into db
-                updateGniCountry(req.body, true, res);
-            });
-        } catch (e) {
-            console.log(e)
-        }
-    } else if(req.rawHeaders.includes('application/json')){
-        console.log("The request is a json request::: ", req.is("application/json"))
-        console.log(123)
-        let result = validateGniCountryJson(req)
-        if(!result){
+    let type: any = req.headers['content-type'];
+
+    if(req.body.constructor === Object && Object.keys(req.body).length > 0)
+    {
+        if(type == 'application/xml'){
+            let validator = require('xsd-schema-validator');
+            try{
+                //validate against xsd
+                validator.validateXML(OBJtoXML(req.body), 'source/middleware/suicideRates/xmlSRSchema.xsd', function(err:any, result:any) {
+                    if (err) {
+                        return returnError400(res);
+                    }
+                    // extract values from req.body and insert into db
+                    updateGniCountry(req.body, true, res);
+                });
+            } catch (e) {
+                console.log(e)
+                return returnError400(res);
+            }
+        } else if(type == 'application/json'){
+            let result = validateGniCountryJson(req)
+            if(!result){
+                return returnError400(res);
+            }
+            updateGniCountry(req.body, false, res)
+        } else {
             return returnError400(res);
         }
-        updateGniCountry(req.body, false, res)
+    } else {
+        return returnError400(res);
     }
 };
 
@@ -106,10 +114,26 @@ const postGniCountry = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const postGniCountryAddColumn = async (req: Request, res: Response, next: NextFunction) => {
-    // get the post id from req.params
-    let year: string = req.params.year;
-    // delete the post
-    insertNewGniCountryColumn(year, res)
+    if(req.body.constructor === Object && Object.keys(req.body).length == 0)
+    {
+        // get the post id from req.params
+        let year: string = req.params.year;
+        if(year.match('^[0-9]*$'))
+        {
+            let yearInt: any = parseInt(year);
+            if(yearInt > 0)
+            {
+                // delete the post
+                insertNewGniCountryColumn(year, res)
+            } else {
+                return returnError400(res);
+            }
+        } else {
+            return returnError400(res);
+        }
+    } else {
+        return returnError400(res);
+    }
 };
 
 // support functions

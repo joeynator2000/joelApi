@@ -5,9 +5,8 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="country" type="xs:string"/>
-                <xs:element name="code" type="xs:string" />
-                <xs:element name="year" type="xs:unsignedShort" />
-                <xs:element name="value" type="xs:string" />
+                <xs:element name="year" type="xs:integer" />
+                <xs:element name="value" type="xs:double" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Military spending schema",
+  "description": "holds data for the military spending of a country",
+  "type": "object",
+  "properties": {
+    "country": {
+      "description": "The unique identifier of a place on the world",
+      "type": "string"
+    },
+    "year": {
+      "description": "The year of the countries recorded military spending",
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "value": {
+      "description": "The recorded amount of us dollars for military purposes of a given country in a given year",
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  },
+  "required": [ "country", "year", "value" ],
+  "additionalProperties": false
+}

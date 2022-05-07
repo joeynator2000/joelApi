@@ -7,6 +7,7 @@ import {
     insertNewMSpendingColumn
 } from '../services/mSpendingFunctions';
 import {validateMSpendingJson} from "../middleware/militarySpending/mSpendingJsonValidation";
+import {insertNewGniCountryColumn} from "../services/gniCountryFunctions";
 
 // getting all posts
 // const getPosts = async (req: Request, res: Response, next: NextFunction) => {
@@ -15,45 +16,65 @@ import {validateMSpendingJson} from "../middleware/militarySpending/mSpendingJso
 
 const getAllMSpending = async (req: Request, res: Response, next: NextFunction) => {
     // get the post id from the req
-    console.log(123)
-    let type: any = req.headers.type;
-    if(!type){
+    let type: any = req.headers['content-type'];
+    // console.log("tzpe is:  ", type)
+    if(req.body.constructor === Object && Object.keys(req.body).length === 0)
+    {
+        if(type){
+            getMSpendingAll(res, type);
+        } else {
+            return returnError400(res)
+        }
+    } else {
         return returnError400(res)
     }
-    getMSpendingAll(res, type);
 };
 
 // updating a post
 const putUpdateMSpending = async (req: Request, res: Response, next: NextFunction) => {
-    if(req.rawHeaders.includes('application/xml')){
-        let validator = require('xsd-schema-validator');
-        try{
-            //validate against xsd
-            validator.validateXML(OBJtoXML(req.body), 'source/middleware/suicideRates/xmlSRSchema.xsd', function(err:any, result:any) {
-                if (err) {
-                    return returnError400(res);
-                }
-                // extract values from req.body and insert into db
-                updateMSpending(req.body, true, res);
-            });
-        } catch (e) {
-            console.log(e)
-        }
-    } else if(req.rawHeaders.includes('application/json')){
-        let result = validateMSpendingJson(req, next)
-        if(!result){
+    let type: any = req.headers['content-type'];
+    if(req.body.constructor === Object && Object.keys(req.body).length > 0)
+    {
+        if(type == 'application/xml'){
+            let validator = require('xsd-schema-validator');
+            try{
+                //validate against xsd
+                validator.validateXML(OBJtoXML(req.body), 'source/middleware/militarySpending/xmlMSSchema.xsd', function(err:any, result:any) {
+                    if (err) {
+                        return returnError400(res);
+                    }
+                    // extract values from req.body and insert into db
+                    updateMSpending(req.body, true, res);
+                });
+            } catch (e) {
+                console.log(e)
+            }
+        } else if(type == 'application/json'){
+            let result = validateMSpendingJson(req)
+            if(!result){
+                return returnError400(res);
+            }
+            updateMSpending(req.body, false, res)
+        } else {
             return returnError400(res);
         }
-        updateMSpending(req.body, false, res)
+    } else {
+        return returnError400(res);
     }
 };
 
 // deleting a post
 const deleteDeleteMSpending = async (req: Request, res: Response, next: NextFunction) => {
-    // get the post id from req.params
-    let id: string = req.params.id;
-    // delete the post
-    deleteMSpending(id, res)
+    if(req.body.constructor === Object && Object.keys(req.body).length == 0)
+    {
+        // get the post id from req.params
+        let id: string = req.params.country;
+        // delete the post
+        deleteMSpending(id, res)
+    } else {
+        console.log(456)
+        return returnError400(res);
+    }
 };
 
 // adding a post
@@ -63,32 +84,32 @@ const postMSpending = async (req: Request, res: Response, next: NextFunction) =>
     //console.log('is json: ', req.rawHeaders.includes('application/json'))
     //console.log('is xml: ', JSON.stringify(req.rawHeaders.includes('application/xml')))
     //check if api post is xml or json
+    let type: any = req.headers['content-type'];
 
-    if(Object.keys(req.body).length){
-        if(req.rawHeaders.includes('application/xml')){
+    if(req.body.constructor === Object && Object.keys(req.body).length > 0){
+        if(type == 'application/xml'){
             let validator = require('xsd-schema-validator');
             try{
                 //validate against xsd
-                validator.validateXML(OBJtoXML(req.body), 'source/middleware/suicideRates/xmlSRSchema.xsd', function(err:any, result:any) {
+                validator.validateXML(OBJtoXML(req.body), 'source/middleware/militarySpending/xmlMSSchema.xsd', function(err:any, result:any) {
                     if (err) {
                         return returnError400(res);
                     }
                     // extract values from req.body and insert into db
-                    let insertResult = insertMSpending(req.body, true, res);
-                    if(insertResult){
-                        return returnStatus200(res);
-                    }
+                    insertMSpending(req.body, true, res);
                 });
             } catch (e) {
                 console.log(e)
+                return returnError400(res)
             }
-        } else if(req.rawHeaders.includes('application/json')){
-            console.log('ok')
-            let result = validateMSpendingJson(req, next)
+        } else if(type == 'application/json'){
+            let result = validateMSpendingJson(req)
             if(!result){
                 return returnError400(res);
             }
             insertMSpending(req.body, false, res)
+        } else {
+            return returnError400(res)
         }
     } else {
         return returnError400(res)
@@ -96,10 +117,25 @@ const postMSpending = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 const postMSpendingAddColumn = async (req: Request, res: Response, next: NextFunction) => {
-    // get the post id from req.params
-    let year: string = req.params.year;
-    // delete the post
-    insertNewMSpendingColumn(year, res)
+    if(req.body.constructor === Object && Object.keys(req.body).length == 0)
+    {
+        let year: string = req.params.year;
+        if(year.match('^[0-9]*$'))
+        {
+            let yearInt: any = parseInt(year);
+            if(yearInt > 0)
+            {
+                // delete the post
+                insertNewMSpendingColumn(year, res)
+            } else {
+                return returnError400(res);
+            }
+        } else {
+            return returnError400(res);
+        }
+    } else {
+        return returnError400(res);
+    }
 };
 
 function returnError400(res: Response){

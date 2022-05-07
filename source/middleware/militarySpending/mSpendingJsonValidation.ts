@@ -1,19 +1,14 @@
-import {mSpendingJsonSchema} from "./jsonMSpendingSchema";
-import {NextFunction, Request} from "express";
+import * as mSpendingJsonSchema from "../../middleware/militarySpending/jsonMSpendingSchema.json";
+import {Request} from "express";
 
-export function validateMSpendingJson(req: Request, next: NextFunction){
+export function validateMSpendingJson(req: Request){
     try{
-        const Ajv: any = require("ajv/dist/jtd")
-        let ajv = new Ajv.default({ allErrors: true });
-
+        const Ajv = require("ajv").default
+        const ajv = new Ajv({allErrors: true})
         const validate = ajv.compile(mSpendingJsonSchema)
-        let isValid = validate(req.body)
+        const isValid = validate(req.body)
         console.log('JSON VALIDITY: ', isValid)
-        if(isValid){
-            return isValid
-        } else {
-            return next()
-        }
+        return isValid;
     }catch (e) {
         console.log(e)
     }

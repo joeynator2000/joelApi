@@ -9,8 +9,9 @@ requirements before being able to run the application:
 
 Extra help if required:
 - local mysql database such as xampp is required. (edit the login details on source/services/database.ts, database can be found in database folder in root directory)
-- To import the file on xampp, click on the joel_api database on the left hand side, then click import, and choose the file in this project in the file location: root/database/joel_api.sql 
+- To import the file on xampp, click on the joel_api database on the left-hand side, then click import, and choose the file in this project in the file location: root/database/joel_api.sql 
 - Once java home is set up, in order to run npm i command you might need to reset your ide
+- For the cros chrome extension, make sure to click on the icon at the extensions at the top right and make sure it is activated. When inspecting the webpage the api calls are still blocked, go to the options of the chrome extension and allow the reception of unverified api call sources.
 
 get started:
 1. open XAMPP and create a database with the name: joel_api

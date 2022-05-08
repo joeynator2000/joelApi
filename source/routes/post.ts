@@ -3,6 +3,7 @@ import express from 'express';
 import sController from '../controllers/sRateController';
 import mController from '../controllers/mSpendingController';
 import gCountryController from "../controllers/gCountryController";
+import converterXmlToJson from "../services/converterXmlToJson";
 
 const router = express.Router();
 //requires header to have key name "type" with value json or xml
@@ -55,4 +56,6 @@ router.post('/gniCountry/:year', gCountryController.postGniCountryAddColumn); //
  * }
  *
  * */
+
+//router.get('convertXmlToJson', converterXmlToJson.converterMethod)//used to assist browser to process xml data
 export = router;

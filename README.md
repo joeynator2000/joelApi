@@ -1,4 +1,16 @@
 New read me:
+requirements before being able to run the application:
+- have NodeJS installed. Install here: https://nodejs.org/en/download/
+- have Xampp installed. install here: https://www.apachefriends.org/de/index.html
+- have CROS chrome extension installed. install here: https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf/related?hl=en-US
+- To use the dashboard the Chrome extension CORS needs to be installed -> go to options and make sure that "Access-Control-Allow-Headers" is turned on! link provided below
+- Have JAVA HOME environment variable set up. Follow this tutorial: https://javatutorial.net/set-java-home-windows-10/
+- install Postman to test the api calls!
+
+Extra help if required:
+- local mysql database such as xampp is required. (edit the login details on source/services/database.ts, database can be found in database folder in root directory)
+- To import the file on xampp, click on the joel_api database on the left hand side, then click import, and choose the file in this project in the file location: root/database/joel_api.sql 
+- Once java home is set up, in order to run npm i command you might need to reset your ide
 
 get started:
 1. open XAMPP and create a database with the name: joel_api
@@ -6,42 +18,29 @@ get started:
 3. Make sure your local machiene has node js installed in order to run the api!
    1. Open the terminal in your IDE or open the command prompt and navigate to this projects directory
    2. run the command: `npm i` or `npm install` to install all the required dependencies
-4. You can now run `npm run dev` to start up the api
-
-
-Requirements:
-- node installed
-- JAVA_HOME environment variable is set up and has JDK and Javac (required for xml validation) (This link will provide you with assistance if required: https://docs.oracle.com/cd/E21454_01/html/821-2532/inst_cli_jdk_javahome_t.html)
-- Instructions for setting up java home can be completed by following the tutorial in the following link: https://javatutorial.net/set-java-home-windows-10/
-- Once java home is set up, in order to run npm i command you might need to reset your ide
-- local mysql database such as xampp is required. (edit the login details on source/services/database.ts, database can be found in database folder in root directory)
+4. Start the server by running the following command in the terminal: `npm run dev`
 
 How to use api:
 * (Setup step perform once) run npm i or npm install in the terminal to set your node dependencies
-* http://localhost:6060 is the base address (this can be used in postman as address to test the api)
-* Requires header!!! key name "type" with value json or xml (will determine what return type is desired and required)
-* To use the dashboard the Chrome extension CORS needs to be installed -> go to options and make sure that "Access-Control-Allow-Headers" is turned on! link provided below
-* run npm run dev in terminal (This command will start the api. to restart if a crash happens type rs, Ctrl + C to terminate the server activities)
+* http://localhost:6061 is the base address (this can be used in postman as address to test the api)
+* Requires header for getters and posts!!! key name "content-type" with value application/json or application/xml (will determine what return type of the data)
+* extensive explanations for ALL routes can be found on the post.ts file in file directory: projectroot/source/routes/post.ts
 
-Chrome extension for running dashboard.  
-https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf/related?hl=en-US
+How to run the dashboard:
+- make sure the CROS chrome extension is running and is turned on!
+- simply open the dashboard.html file in your IDE and open it in the top right corner by clicking on the chrome icon to run it in google chrome!
+- otherwise copy the file path of the location of the html file into your Google Chrome browser and open it manually like that! 
+- instructions on what to do can be found on the dashboard itself.
 
-Available commands (all routes found under source/routes/post.ts):
-* get data from a specified id range (required to place type key with json/xml value in header): GET /table/startingId/endingId
-* update by id, pass valid json or xml in body: PUT /table/id
-* delete by id: DELETE /table/id
-* add entry to dataset: POST /table
+Justifications for route method types:
+- the GET method has been used for all the functions which return data from the api. This is because the GET method it is a safe and independant method that does not manipulate any of the data
+- The POST method has been used for functions which send data to be added to the database, or said differently, add data that does not already exist in the database
+- The PUT method is used to update resources or data in the dataset that already exists within the database. 
+- The DELETE method is used to remove resources from the database
 
-The specific table names can be viewed on the source/routes/post.ts file, instructions for the required parameters are displayed with comments!
-To test the api using postman, simply copy one of the path names in the post.ts file and ensure that the postman configurations match the comments above the route you are testing. The server responses should also give an indication as to what the problem is.
+Other justifications:
+- The names in the database of countries with spaces in them have been modified to not hold any spaces. This is because, in order to create xml tags with the countries name as the tag, xml formatting requires the tag name to not hold any spaces. As a result, spaces and other special characters such as " or ' have been removed.
+- As this api is running on a javascript basis,there is no way to natively process xml, which is why the java_home environment variable has been set up. The api uses the computers local java to process the xml. In order to produce proper xml, the returned data of the database had to be converted into a new structure for this library to be used effectively. This is because with the mysql returned json results, the created xml had numbers as tag names, which is not allowed for proper xml tags.
 
-What went well:
-I am very proud of having achieved xml validation in javascript, as it uses java to validate. Furthermore, the database posed a little of a challenge, however, creative querying solved the problem in the end.
-
-Even better if:
-The database was not ideal for this project. Ideally I would either have a non-relational database, or data structured in a manner that columns are not values.
-
-notes
-could have made xml sequence of elements to bundle the output xml
-
-could have made elegant delegate solution for the repeating code in the validators to choose what schema to pick for validation
+No get all from suicide rates method:
+- There is no method for getting all suicide rates as the dataset used by the student is very broad and only a fraction of the available data is required. Because of this, the student created a get all from a specified country api call, as this is relevant for the consuming web application of the joel api.
